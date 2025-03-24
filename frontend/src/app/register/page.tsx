@@ -1,11 +1,32 @@
+"use client";
 import Button from "@/components/widgets/Button";
 import InputField from "@/components/widgets/InputField";
 import Link from "next/link";
+import React from "react";
+import toast from "react-hot-toast";
 import { FaUser } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { PiPasswordFill } from "react-icons/pi";
-
+import axios from "../api/axios";
 export default function page() {
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+      confirm_password: formData.get("confirm_password") as string,
+    };
+    axios
+      .post("/auth/register", data)
+      .then((res) => {
+        toast.success("Registration successful");
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
+  };
   return (
     <>
       <section className="bg-gray-100 ">
@@ -16,7 +37,7 @@ export default function page() {
                 Create new account
               </h1>
 
-              <form className="space-y-1">
+              <form className="space-y-1" onSubmit={handleRegister}>
                 <InputField
                   label="Full Name"
                   type="text"
@@ -39,7 +60,7 @@ export default function page() {
                 <InputField
                   label="Confirm Password"
                   type="password"
-                  name="password"
+                  name="confirm_password"
                   icon={<PiPasswordFill />}
                 />
                 <div className="flex items-center justify-between">
