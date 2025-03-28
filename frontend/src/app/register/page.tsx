@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import { FaUser } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { PiPasswordFill } from "react-icons/pi";
-import axios from "../api/axios";
+import axios from "../../lib/axios";
 export default function page() {
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

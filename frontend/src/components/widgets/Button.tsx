@@ -25,7 +25,12 @@ export default function Button({
       onClick={onClick}
     >
       {loading ? (
-        <span className="loading loading-bars loading-sm bg-white"></span>
+        <>
+          <div className="flex justify-center items-center h-5 gap-2">
+            <div className="rounded-full h-3 w-3 bg-white animate-ping"></div>
+            <p>Loading</p>
+          </div>
+        </>
       ) : (
         title
       )}

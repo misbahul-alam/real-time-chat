@@ -1,10 +1,25 @@
+"use client";
 import Button from "@/components/widgets/Button";
 import InputField from "@/components/widgets/InputField";
 import Link from "next/link";
+import toast from "react-hot-toast";
 import { MdEmail } from "react-icons/md";
 import { PiPasswordFill } from "react-icons/pi";
-
+import Form from "next/form";
+import { login } from "@/lib/auth";
+import { useActionState, useEffect } from "react";
 export default function page() {
+  const [state, action, isLoading] = useActionState(login, {
+    message: "",
+    status: "",
+  });
+  useEffect(() => {
+    if (state?.status === "success") {
+      toast.success(state.message);
+    } else if (state?.status === "error") {
+      toast.error(state.message);
+    }
+  }, [state]);
   return (
     <>
       <section className="bg-gray-100 ">
@@ -15,7 +30,7 @@ export default function page() {
                 Login
               </h1>
 
-              <form className="space-y-1">
+              <Form className="space-y-1" action={action}>
                 <InputField
                   label="Email Address"
                   type="email"
@@ -56,7 +71,11 @@ export default function page() {
                     Forget password
                   </Link>
                 </div>
-                <Button title="LOGIN" className={"w-full"} />
+                <Button
+                  title="LOGIN"
+                  className={"w-full"}
+                  loading={isLoading}
+                />
 
                 <p className="text-sm font-light text-gray-500 ">
                   I have no account?{" "}
@@ -67,7 +86,7 @@ export default function page() {
                     Create an account
                   </Link>
                 </p>
-              </form>
+              </Form>
             </div>
           </div>
         </div>
