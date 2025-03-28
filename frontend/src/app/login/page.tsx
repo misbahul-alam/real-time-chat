@@ -8,7 +8,9 @@ import { PiPasswordFill } from "react-icons/pi";
 import Form from "next/form";
 import { login } from "@/lib/auth";
 import { useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 export default function page() {
+  const router = useRouter();
   const [state, action, isLoading] = useActionState(login, {
     message: "",
     status: "",
@@ -16,6 +18,7 @@ export default function page() {
   useEffect(() => {
     if (state?.status === "success") {
       toast.success(state.message);
+      router.push("/");
     } else if (state?.status === "error") {
       toast.error(state.message);
     }

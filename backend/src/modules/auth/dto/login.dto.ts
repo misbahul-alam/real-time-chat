@@ -6,6 +6,5 @@ export class LoginDto {
   email: string;
 
   @IsNotEmpty({ message: 'Password is required' })
-  @IsStrongPassword({}, { message: 'Password must be strong' })
   password: string;
 }

@@ -35,6 +35,31 @@ export const login = async (
   }
 };
 
+export const register = async (
+  state: { status: string; message: string; token?: string },
+  formData: FormData
+) => {
+  try {
+    const data = {
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+      confirm_password: formData.get("confirm_password") as string,
+    };
+    const res = await axios.post("/auth/register", data);
+
+    return {
+      status: "success",
+      message: res.data.message || "Registration successful!",
+    };
+  } catch (error: any) {
+    return {
+      status: "error",
+      message: error.response?.data?.message || "Login failed!",
+    };
+  }
+};
+
 export const logout = async () => {
   try {
     const cookieStore = await cookies();
