@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../../database/entities/user.entities';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -18,7 +19,7 @@ export class AuthService {
     private userRepository: Repository<User>,
     private jwtService: JwtService,
   ) {}
-  async login(loginDto: LoginDto) {
+  async login(loginDto: LoginDto, res: Response) {
     const { email, password } = loginDto;
     const user = await this.userRepository.findOne({
       where: { email },
@@ -34,9 +35,15 @@ export class AuthService {
     }
 
     const payload = { sub: user.id, email: user.email };
-    const token = this.jwtService.sign(payload);
+    const access_token = this.jwtService.sign(payload);
+    res.cookie('access_token', access_token, {
+      httpOnly: true,
+      maxAge: 30 * 60 * 60 * 24 * 1000, // 30 days
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+    });
 
-    return { access_token: token };
+    return res.json({ access_token, user: { ...user, password: undefined } });
   }
   async register(registerDto: RegisterDto) {
     if (registerDto.password !== registerDto.confirm_password) {

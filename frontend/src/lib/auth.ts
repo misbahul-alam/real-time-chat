@@ -15,7 +15,7 @@ export const login = async (
     const res = await axios.post("/auth/login", data);
     const token = res.data.access_token;
 
-    cookieStore.set("token", token, {
+    cookieStore.set("access_token", token, {
       expires: new Date(Date.now() + 60 * 60 * 1000 * 24 * 30),
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
