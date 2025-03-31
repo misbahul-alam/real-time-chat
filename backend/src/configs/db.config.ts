@@ -1,5 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { Message } from 'src/database/entities/message.entites';
+import { Room } from 'src/database/entities/room.entites';
 import { User } from 'src/database/entities/user.entities';
 export const databaseConfig = (
   configService: ConfigService,
@@ -13,5 +15,5 @@ export const databaseConfig = (
   autoLoadEntities: true,
   synchronize: process.env.NODE_ENV !== 'production',
   logging: process.env.NODE_ENV !== 'production',
-  entities: [User],
+  entities: [User, Room, Message],
 });
