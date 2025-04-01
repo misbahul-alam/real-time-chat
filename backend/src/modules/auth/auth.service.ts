@@ -11,6 +11,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../../database/entities/user.entities';
 import { Response } from 'express';
+import { CustomJwtPayload } from 'src/common/interfaces/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -34,7 +35,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { sub: user.id, email: user.email };
+    const payload: CustomJwtPayload = { sub: user.id, email: user.email };
     const access_token = this.jwtService.sign(payload);
     res.cookie('access_token', access_token, {
       httpOnly: true,

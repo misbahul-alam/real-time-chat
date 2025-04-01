@@ -1,7 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { Message } from 'src/database/entities/message.entites';
-import { Room } from 'src/database/entities/room.entites';
+import { Message } from 'src/database/entities/message.entities';
+import { Room } from 'src/database/entities/room.entities';
 import { User } from 'src/database/entities/user.entities';
 export const databaseConfig = (
   configService: ConfigService,

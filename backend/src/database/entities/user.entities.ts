@@ -4,12 +4,14 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { Message } from './message.entities';
 
 @Entity('users')
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ length: 100 })
   name: string;
@@ -26,6 +28,9 @@ export class User {
 
   @Column({ select: false })
   password: string;
+
+  @OneToMany(() => Message, (message) => message.sender, { cascade: true })
+  messages: Message[];
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

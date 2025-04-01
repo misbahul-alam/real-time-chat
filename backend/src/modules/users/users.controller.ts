@@ -7,7 +7,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
   @Get()
   @UseGuards(JwtAuthGuard)
-  loginUser(@Req() req) {
-    return this.usersService.loginUser(req.user.id);
+  async loginUser(@Req() req) {
+    return this.usersService.loginUser(req.user.id as string);
   }
 }
