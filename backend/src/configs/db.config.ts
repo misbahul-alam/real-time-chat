@@ -1,8 +1,9 @@
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { Message } from 'src/database/entities/message.entities';
-import { Room } from 'src/database/entities/room.entities';
-import { User } from 'src/database/entities/user.entities';
+import { Message } from '../database/entities/message.entities';
+import { RoomMember } from '../database/entities/room-member.entity';
+import { Room } from '../database/entities/room.entities';
+import { User } from '../database/entities/user.entities';
 export const databaseConfig = (
   configService: ConfigService,
 ): TypeOrmModuleOptions => ({
@@ -15,5 +16,5 @@ export const databaseConfig = (
   autoLoadEntities: true,
   synchronize: process.env.NODE_ENV !== 'production',
   logging: process.env.NODE_ENV !== 'production',
-  entities: [User, Room, Message],
+  entities: [User, Room, Message, RoomMember],
 });

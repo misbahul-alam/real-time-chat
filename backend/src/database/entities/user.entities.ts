@@ -7,6 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Message } from './message.entities';
+import { RoomMember } from './room-member.entity';
 
 @Entity('users')
 export class User {
@@ -32,9 +33,12 @@ export class User {
   @OneToMany(() => Message, (message) => message.sender, { cascade: true })
   messages: Message[];
 
+  @OneToMany(() => RoomMember, (roomMember) => roomMember.user)
+  room_members: RoomMember[];
+
   @CreateDateColumn({ type: 'timestamp' })
-  createdAt: Date;
+  created_at: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  updatedAt: Date;
+  updated_at: Date;
 }
