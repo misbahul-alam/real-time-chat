@@ -19,7 +19,6 @@ export class RoomMember {
 
   @ManyToOne(() => Room, (room) => room.members, {
     onDelete: 'CASCADE',
-    eager: true,
   })
   room: Room;
 

@@ -14,29 +14,55 @@ export class RoomsService {
     private readonly roomMemberRepository: Repository<RoomMember>,
   ) {}
   async create(createRoomDto: CreateRoomDto, adminId: string) {
-    return await this.roomRepository.save({
-      members: [
-        {
-          user: { id: adminId },
-          role: 'admin',
-        },
-        {
-          user: { id: createRoomDto.user_id },
-          role: 'member',
-        },
-      ],
+    const room = await this.roomRepository.save({
+      is_group: false,
     });
+    const memberList = [
+      {
+        user: { id: adminId },
+        role: 'admin',
+        room,
+      },
+      {
+        user: { id: createRoomDto.user_id },
+        role: 'member',
+        room,
+      },
+    ];
+
+    await this.roomMemberRepository.save(memberList);
+    return room;
   }
 
   async findAll() {
-    return await this.roomRepository.find({
-      relations: ['members'],
-    });
+    const room = await this.roomRepository
+      .createQueryBuilder('room')
+      .leftJoinAndSelect('room.members', 'roomMember')
+      .leftJoinAndSelect('roomMember.user', 'user')
+      .addSelect(['user.id', 'user.name', 'user.email', 'user.avatar'])
+      .getMany();
+
+    return room;
   }
 
-  async findOne(id: string) {
-    return await this.roomRepository.findOne({
-      where: { id },
-    });
+  async findOne(id: string, adminId: string) {
+    const room = await this.roomRepository
+      .createQueryBuilder('room')
+      .leftJoinAndSelect('room.members', 'roomMember')
+      .leftJoinAndSelect('roomMember.user', 'user')
+      .addSelect(['user.id', 'user.name', 'user.email', 'user.avatar'])
+      .where('room.id = :id', { id })
+      .getOne();
+
+    if (room?.name === null) {
+      room.members.forEach((member) => {
+        if (member.user.id !== adminId) {
+          room.name = member.user.name;
+          room.avatar = member.user.avatar;
+        }
+      });
+    }
+
+    return room;
   }
 }
