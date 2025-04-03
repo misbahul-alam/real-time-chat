@@ -17,18 +17,22 @@ export class RoomsController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  create(@Body() createRoomDto: CreateRoomDto, @Req() req) {
-    return this.roomsService.create(createRoomDto, req.user.id as string);
+  create(
+    @Body() createRoomDto: CreateRoomDto,
+    @Req() req: { user: { id: string } },
+  ) {
+    return this.roomsService.create(createRoomDto, req.user.id);
   }
 
   @Get()
-  findAll() {
-    return this.roomsService.findAll();
+  @UseGuards(JwtAuthGuard)
+  findAll(@Req() req: { user: { id: string } }) {
+    return this.roomsService.findAll(req.user.id);
   }
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  findOne(@Param('id') id: string, @Req() req) {
-    return this.roomsService.findOne(id, req.user.id as string);
+  findOne(@Param('id') id: string, @Req() req: { user: { id: string } }) {
+    return this.roomsService.findOne(id, req.user.id);
   }
 }

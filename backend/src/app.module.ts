@@ -6,6 +6,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import { RoomsModule } from './modules/rooms/rooms.module';
+import { ChatsModule } from './modules/chats/chats.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { RoomsModule } from './modules/rooms/rooms.module';
     AuthModule,
     UsersModule,
     RoomsModule,
+    ChatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

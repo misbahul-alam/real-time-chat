@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { Room } from 'src/database/entities/room.entities';
 import { Repository } from 'typeorm';
@@ -34,15 +34,30 @@ export class RoomsService {
     return room;
   }
 
-  async findAll() {
-    const room = await this.roomRepository
+  async findAll(adminId: string) {
+    const rooms = await this.roomRepository
       .createQueryBuilder('room')
       .leftJoinAndSelect('room.members', 'roomMember')
       .leftJoinAndSelect('roomMember.user', 'user')
       .addSelect(['user.id', 'user.name', 'user.email', 'user.avatar'])
       .getMany();
 
-    return room;
+    // Update room name & avatar if they are null
+    rooms.forEach((room) => {
+      if (!room.name) {
+        const otherMember = room.members.find(
+          (member) => member.user.id !== adminId,
+        );
+        if (otherMember) {
+          Object.assign(room, {
+            name: otherMember.user.name,
+            avatar: otherMember.user.avatar,
+          });
+        }
+      }
+    });
+
+    return rooms;
   }
 
   async findOne(id: string, adminId: string) {
@@ -54,13 +69,20 @@ export class RoomsService {
       .where('room.id = :id', { id })
       .getOne();
 
-    if (room?.name === null) {
-      room.members.forEach((member) => {
-        if (member.user.id !== adminId) {
-          room.name = member.user.name;
-          room.avatar = member.user.avatar;
-        }
-      });
+    if (!room) {
+      throw new NotFoundException('Room not found');
+    }
+
+    if (!room.name) {
+      const otherMember = room.members.find(
+        (member) => member.user.id !== adminId,
+      );
+      if (otherMember) {
+        Object.assign(room, {
+          name: otherMember.user.name,
+          avatar: otherMember.user.avatar,
+        });
+      }
     }
 
     return room;
